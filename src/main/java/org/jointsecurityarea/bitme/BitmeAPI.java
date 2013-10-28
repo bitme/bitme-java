@@ -92,17 +92,33 @@ public class BitmeAPI {
     }
 
     /**
-     * Get transactions associated with authenticated user
+     * Get transactions associated with authenticated user with default params (BTC, limit 10, descending order, page 1)
      * @return JSONObject containing transactions
      */
     public JSONObject get_transactions()
     { return get_transactions("BTC"); }
+    /**
+     * Get BTC transactions associated with authenticated user with default params (limit 10, descending order, page 1)
+     * @return JSONObject containing transactions
+     */
     public JSONObject get_transactions(String currency_cd)
     { return get_transactions(currency_cd, 10); }
+    /**
+     * Get some number of BTC transactions associated with authenticated user with default params (descending order, page 1)
+     * @return JSONObject containing transactions
+     */
     public JSONObject get_transactions(String currency_cd, int limit)
     { return get_transactions(currency_cd, limit, "DESC"); }
+    /**
+     * Get some number of ordered BTC transactions associated with authenticated user with default params (page 1)
+     * @return JSONObject containing transactions
+     */
     public JSONObject get_transactions(String currency_cd, int limit, String order_by)
     { return get_transactions(currency_cd, limit, order_by, 1); }
+    /**
+     * Get some number of ordered BTC transactions associated with authenticated user with a given page offset
+     * @return JSONObject containing transactions
+     */
     public JSONObject get_transactions(String currency_cd, int limit, String order_by, int page)
     {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
