@@ -1,3 +1,4 @@
 # IMPORTANT!!! Contains API SECRET!
 src/test/java/org/jointsecurityarea/bitme/BitmeAPIKeys.java
 target
+.idea
