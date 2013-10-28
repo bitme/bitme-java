@@ -15,3 +15,11 @@ To build, you'll need maven:
 ## Install
 
     mvn install
+
+## Testing
+To get the tests to work, you'll have to copy the BitmeAPIKeyExample.java
+file to BitmeAPIKey.java in the same directory.  Then, edit the new file
+and add your API key information.  DO NOT COMMIT THIS NEW FILE.  The
+tests should run now:
+
+    mvn package
