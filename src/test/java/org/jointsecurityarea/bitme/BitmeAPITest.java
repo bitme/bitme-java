@@ -4,8 +4,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
-import sun.jvm.hotspot.utilities.Assert;
-
+import org.junit.Assert;
 public class BitmeAPITest {
     private BitmeAPI api;
     @Before
@@ -24,24 +23,24 @@ public class BitmeAPITest {
     public void testAccounts() throws Exception {
         JSONObject object = this.api.accounts();
         // Validate
-        Assert.that(object.has("accounts"), "Accounts not present");
+        Assert.assertTrue(object.has("accounts"));
     }
     @Test
     public void testBitcoinAddress() throws Exception {
         JSONObject object = this.api.bitcoin_address();
         // Validate
-        Assert.that(object.has("address"), "Address not present");
+        Assert.assertTrue(object.has("address"));
     }
     @Test
     public void testOpenOrders() throws Exception {
         JSONObject object = this.api.open_orders();
         // Validate
-        Assert.that(object.has("orders"), "Orders not present");
+        Assert.assertTrue(object.has("orders"));
     }
     @Test
     public void testGetTransactions() throws Exception {
         JSONObject object = this.api.get_transactions();
         // Validate
-        Assert.that(object.has("transactions"), "Orders not present");
+        Assert.assertTrue(object.has("transactions"));
     }
 }
