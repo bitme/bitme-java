@@ -18,6 +18,7 @@ import org.apache.http.util.EntityUtils;
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
@@ -104,10 +105,21 @@ public class BitmeAPI {
             logger.info("Final URL: " + req.getURI().toString());
             response = this.httpClient.execute(req);
             HttpEntity entity = response.getEntity();
-            object = new JSONObject(EntityUtils.toString(entity));
+            String str_entity = EntityUtils.toString(entity);
+            logger.info("Response Content: " + str_entity);
+            try {
+                object = new JSONObject(str_entity);
+            } catch (JSONException e) {
+                try {
+                    JSONArray array = new JSONArray(str_entity);
+                    object = new JSONObject();
+                    object.put("array", array);
+                } catch (JSONException inner) {
+                    inner.printStackTrace();
+                }
+            }
+
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         } finally {
             if(response != null)
@@ -186,5 +198,26 @@ public class BitmeAPI {
     public JSONObject get_order(String uuid)
     {
         return query("/order/" + uuid, true);
+    }
+
+    public JSONObject get_orderbook()
+        { return get_orderbook("LTCBTC"); }
+    public JSONObject get_orderbook(String currency_pair)
+    {
+        return query("/orderbook/" + currency_pair);
+    }
+
+    public JSONObject get_compat_orderbook()
+        { return get_compat_orderbook("LTCBTC"); }
+    public JSONObject get_compat_orderbook(String currency_pair)
+    {
+        return query("/compat/orderbook/" + currency_pair);
+    }
+
+    public JSONObject get_compat_trades()
+    { return get_compat_trades("LTCBTC"); }
+    public JSONObject get_compat_trades(String currency_pair)
+    {
+        return query("/compat/trades/" + currency_pair);
     }
 }

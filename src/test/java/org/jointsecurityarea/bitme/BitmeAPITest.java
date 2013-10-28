@@ -78,4 +78,25 @@ public class BitmeAPITest {
         logger.info("Cancel Order returned:" + object.toString());
         Assert.assertTrue(object.has("order"));
     }
+    @Test
+    public void testGetOrderbook() throws Exception {
+        JSONObject object = this.api.get_orderbook();
+        logger.info("Orderbook returned:" + object.toString());
+        // Validate
+        Assert.assertTrue(object.has("orderbook"));
+    }
+    @Test
+    public void testGetCompatOrderbook() throws Exception {
+        JSONObject object = this.api.get_compat_orderbook();
+        logger.info("Orderbook returned:" + object.toString());
+        // Validate
+        Assert.assertTrue(object.has("asks"));
+    }
+    @Test
+    public void testGetCompatTrades() throws Exception {
+        JSONObject object = this.api.get_compat_trades();
+        logger.info("Trades returned:" + object.toString());
+        // Validate
+        Assert.assertTrue(object.has("array"));
+    }
 }
