@@ -87,4 +87,36 @@ public class BitmeAPI {
     {
         return query("/verify-credentials", true, null);
     }
+    public JSONObject accounts()
+    {
+        return query("/accounts", true, null);
+    }
+    public JSONObject bitcoin_address()
+    {
+        return query("/bitcoin-address", true, null);
+    }
+    /* create_order */
+    public JSONObject open_orders()
+    {
+        return query("/orders/open", true, null);
+    }
+    /* cancel_order */
+    /* get_transaction */
+    public JSONObject get_transactions()
+        { return get_transactions("BTC"); }
+    public JSONObject get_transactions(String currency_cd)
+        { return get_transactions(currency_cd, 10); }
+    public JSONObject get_transactions(String currency_cd, int limit)
+        { return get_transactions(currency_cd, limit, "DESC"); }
+    public JSONObject get_transactions(String currency_cd, int limit, String order_by)
+        { return get_transactions(currency_cd, limit, "DESC", 1); }
+    public JSONObject get_transactions(String currency_cd, int limit, String order_by, int page)
+    {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("currency_cd", currency_cd));
+        params.add(new BasicNameValuePair("limit", (new Integer(limit)).toString()));
+        params.add(new BasicNameValuePair("order_by", order_by));
+        params.add(new BasicNameValuePair("page", (new Integer(page)).toString()));
+        return query("/transactions/" + currency_cd, true, params);
+    }
 }
