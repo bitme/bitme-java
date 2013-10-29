@@ -1,25 +1,25 @@
 package org.jointsecurityarea.bitme;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import ch.boye.httpclientandroidlib.HttpEntity;
+import ch.boye.httpclientandroidlib.HttpResponse;
+import ch.boye.httpclientandroidlib.NameValuePair;
+import ch.boye.httpclientandroidlib.client.entity.UrlEncodedFormEntity;
+import ch.boye.httpclientandroidlib.client.methods.HttpGet;
+import ch.boye.httpclientandroidlib.client.methods.HttpPost;
+import ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+import ch.boye.httpclientandroidlib.client.utils.URLEncodedUtils;
+import ch.boye.httpclientandroidlib.impl.client.DefaultHttpClient;
+import ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+import ch.boye.httpclientandroidlib.util.EntityUtils;
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,19 +29,19 @@ import java.util.logging.Logger;
 
 /**
  * BitmeAPI
- * Author: Erik Gregg
+ * @author Erik Gregg
  */
 public class BitmeAPI {
     Logger logger = Logger.getLogger("BitmeAPI");
     private static final String API_URLROOT = "https://bitme.com/rest";
     private final String apiSecret;
     private final String apiKey;
-    private CloseableHttpClient httpClient;
+    private DefaultHttpClient httpClient;
 
     public BitmeAPI(String apiKey, String apiSecret) {
         this.apiKey = apiKey;
         this.apiSecret = apiSecret;
-        this.httpClient = HttpClients.createDefault();
+        this.httpClient = new DefaultHttpClient();
         this.logger.setLevel(Level.ALL);
     }
 
@@ -280,7 +280,7 @@ public class BitmeAPI {
         {
             // Must compute nonce and signature
             HMac hmac = new HMac(new SHA512Digest());
-            hmac.init(new KeyParameter(Base64.decodeBase64(this.apiSecret)));
+            hmac.init(new KeyParameter(Base64.decode(this.apiSecret)));
             byte[] resBuf = new byte[hmac.getMacSize()];
             Date date = new Date();
             long nonce = date.getTime() * 1000 + 1000000;
@@ -290,8 +290,8 @@ public class BitmeAPI {
             hmac.doFinal(resBuf, 0);
             req.addHeader("Rest-Key", this.apiKey);
             logger.info("Rest-Key: " + this.apiKey);
-            req.addHeader("Rest-Sign", new String(Base64.encodeBase64(resBuf)));
-            logger.info("Rest-Sign: " + new String(Base64.encodeBase64(resBuf)));
+            req.addHeader("Rest-Sign", new String(Base64.encode(resBuf)));
+            logger.info("Rest-Sign: " + new String(Base64.encode(resBuf)));
             logger.info("Params: " + to_hash);
             if(req instanceof HttpGet)
             {
@@ -310,7 +310,7 @@ public class BitmeAPI {
             }
         }
 
-        CloseableHttpResponse response = null;
+        HttpResponse response = null;
         try {
             logger.info("Final URL: " + req.getURI().toString());
             response = this.httpClient.execute(req);
@@ -331,13 +331,6 @@ public class BitmeAPI {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if(response != null)
-                try {
-                    response.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
         }
         return object;
     }
