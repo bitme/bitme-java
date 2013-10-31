@@ -130,7 +130,7 @@ public class BitmeAPI {
     }
 
     /**
-     * Create an LTCBTC order with the given properties
+     * Create an BTCLTC order with the given properties
      * @param order_type_cd 'BID' or 'ASK'
      * @param quantity Number of units to transact
      * @param rate Rate at which to transact (Minimum amount is 0.001 BTC)
@@ -139,7 +139,7 @@ public class BitmeAPI {
     public JSONObject create_order(String order_type_cd,
                                    int quantity,
                                    String rate)
-    { return create_order(order_type_cd, quantity, rate, "LTCBTC"); }
+    { return create_order(order_type_cd, quantity, rate, "BTCLTC"); }
 
     /**
      * Create an order with the given properties
@@ -185,11 +185,11 @@ public class BitmeAPI {
     }
 
     /**
-     * Get orderbook (data about open orders) for LTCBTC
+     * Get orderbook (data about open orders) for BTCLTC
      * @return JSONObject containing orderbook data
      */
     public JSONObject get_orderbook()
-    { return get_orderbook("LTCBTC"); }
+    { return get_orderbook("BTCLTC"); }
     /**
      * Get orderbook (data about open orders) for given currency pair
      * @return JSONObject containing orderbook data
@@ -200,11 +200,11 @@ public class BitmeAPI {
     }
 
     /**
-     * Get bitcoincharts-compatible orderbook (data about open orders) for LTCBTC
+     * Get bitcoincharts-compatible orderbook (data about open orders) for BTCLTC
      * @return JSONObject containing orderbook data
      */
     public JSONObject get_compat_orderbook()
-    { return get_compat_orderbook("LTCBTC"); }
+    { return get_compat_orderbook("BTCLTC"); }
     /**
      * Get bitcoincharts-compatible orderbook (data about open orders) for given currency pair
      * @return JSONObject containing orderbook data
@@ -215,11 +215,11 @@ public class BitmeAPI {
     }
 
     /**
-     * Get bitcoincharts-compatible trade array for LTCBTC
+     * Get bitcoincharts-compatible trade array for BTCLTC
      * @return JSONObject containing trade array
      */
     public JSONObject get_compat_trades()
-    { return get_compat_trades("LTCBTC"); }
+    { return get_compat_trades("BTCLTC"); }
     /**
      * Get bitcoincharts-compatible trade array for given currency pair
      * @return JSONObject containing trade array

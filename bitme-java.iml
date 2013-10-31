@@ -21,6 +21,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="httpclientandroidlib-1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: ch.boye:httpclientandroidlib:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk16:1.46" level="project" />
     <orderEntry type="library" name="Maven: org.skyscreamer:jsonassert:1.2.1" level="project" />
