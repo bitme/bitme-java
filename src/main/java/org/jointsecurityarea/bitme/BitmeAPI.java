@@ -73,6 +73,20 @@ public class BitmeAPI {
     }
 
     /**
+     * Withdraws bitcoins to a given bitcoin address
+     * @param amount Amount in BTC to move
+     * @param address Address to move BTC to
+     * @return JSONObject containing the status
+     */
+    public JSONObject bitcoin_withdraw(String amount, String address)
+    {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("amount", amount));
+        params.add(new BasicNameValuePair("address", address));
+        return query("/bitcoin-withdraw", true, params);
+    }
+
+    /**
      * Lists open orders for the authenticated user
      * @return JSONObject containing open orders
      */
