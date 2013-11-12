@@ -83,7 +83,7 @@ public class BitmeAPI {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("amount", amount));
         params.add(new BasicNameValuePair("address", address));
-        return query("/bitcoin-withdraw", true, params);
+        return query("/bitcoin-withdraw", true, params, "POST");
     }
 
     /**
