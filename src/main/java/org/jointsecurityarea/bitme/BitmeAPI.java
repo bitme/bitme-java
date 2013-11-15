@@ -106,31 +106,31 @@ public class BitmeAPI {
     }
 
     /**
-     * Get transactions associated with authenticated user with default params (BTC, limit 10, descending order, page 1)
+     * Get BTC transactions associated with authenticated user with default params (limit 10, descending order, page 1)
      * @return JSONObject containing transactions
      */
     public JSONObject get_transactions()
     { return get_transactions("BTC"); }
     /**
-     * Get BTC transactions associated with authenticated user with default params (limit 10, descending order, page 1)
+     * Get transactions for the specified currency associated with authenticated user with default params (limit 10, descending order, page 1)
      * @return JSONObject containing transactions
      */
     public JSONObject get_transactions(String currency_cd)
     { return get_transactions(currency_cd, 10); }
     /**
-     * Get some number of BTC transactions associated with authenticated user with default params (descending order, page 1)
+     * Get some number of transactions for the specified currency associated with authenticated user with default params (descending order, page 1)
      * @return JSONObject containing transactions
      */
     public JSONObject get_transactions(String currency_cd, int limit)
     { return get_transactions(currency_cd, limit, "DESC"); }
     /**
-     * Get some number of ordered BTC transactions associated with authenticated user with default params (page 1)
+     * Get some number of ordered transactions for the specified currency associated with authenticated user with default params (page 1)
      * @return JSONObject containing transactions
      */
     public JSONObject get_transactions(String currency_cd, int limit, String order_by)
     { return get_transactions(currency_cd, limit, order_by, 1); }
     /**
-     * Get some number of ordered BTC transactions associated with authenticated user with a given page offset
+     * Get some number of ordered transactions for the specified currency associated with authenticated user with a given page offset
      * @return JSONObject containing transactions
      */
     public JSONObject get_transactions(String currency_cd, int limit, String order_by, int page)
