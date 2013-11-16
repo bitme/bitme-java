@@ -151,7 +151,7 @@ public class BitmeAPI {
      * @return JSONObject containing order information
      */
     public JSONObject create_order(String order_type_cd,
-                                   int quantity,
+                                   String quantity,
                                    String rate)
     { return create_order(order_type_cd, quantity, rate, "BTCLTC"); }
 
@@ -164,13 +164,13 @@ public class BitmeAPI {
      * @return JSONObject containing order information
      */
     public JSONObject create_order(String order_type_cd,
-                                   int quantity,
+                                   String quantity,
                                    String rate,
                                    String currency_pair)
     {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("order_type_cd", order_type_cd));
-        params.add(new BasicNameValuePair("quantity", (new Integer(quantity)).toString()));
+        params.add(new BasicNameValuePair("quantity", quantity));
         params.add(new BasicNameValuePair("rate", rate));
         params.add(new BasicNameValuePair("currency_pair", currency_pair));
         return query("/order/create", true, params, "POST");

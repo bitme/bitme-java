@@ -71,7 +71,7 @@ public class BitmeAPITest {
     /* NOTE: You need at least 0.001 BTC available in your account for this to work */
     @Test
     public void testCreateQueryCancelOrders() throws Exception {
-        JSONObject object = this.api.create_order("BID", 1, "0.001");
+        JSONObject object = this.api.create_order("BID", "1.000001", "0.001");
         Assert.assertNotNull(object);
         logger.info("Create Order returned:" + object.toString());
         Assert.assertTrue(object.has("order"));
