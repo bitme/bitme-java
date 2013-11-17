@@ -42,7 +42,10 @@ public class BitmeAPI {
         this.apiKey = apiKey;
         this.apiSecret = apiSecret;
         this.httpClient = new DefaultHttpClient();
-        this.logger.setLevel(Level.ALL);
+        // Production
+        this.logger.setLevel(Level.OFF);
+        // Debug
+        // this.logger.setLevel(Level.ALL);
     }
 
     /**
