@@ -37,22 +37,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>ch.boye</groupId>
-            <artifactId>httpclientandroidlib</artifactId>
-            <version>1.1.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/httpclientandroidlib-1.1.2.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20090211</version>
         </dependency>
         <dependency>
-        <groupId>org.bouncycastle</groupId>
-        <artifactId>bcprov-jdk16</artifactId>
-        <version>1.46</version>
-    </dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
@@ -62,6 +55,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.1</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,16 +1,20 @@
 package org.jointsecurityarea.bitme;
 
-import ch.boye.httpclientandroidlib.HttpEntity;
-import ch.boye.httpclientandroidlib.HttpResponse;
-import ch.boye.httpclientandroidlib.NameValuePair;
-import ch.boye.httpclientandroidlib.client.entity.UrlEncodedFormEntity;
-import ch.boye.httpclientandroidlib.client.methods.HttpGet;
-import ch.boye.httpclientandroidlib.client.methods.HttpPost;
-import ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
-import ch.boye.httpclientandroidlib.client.utils.URLEncodedUtils;
-import ch.boye.httpclientandroidlib.impl.client.DefaultHttpClient;
-import ch.boye.httpclientandroidlib.message.BasicNameValuePair;
-import ch.boye.httpclientandroidlib.util.EntityUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -19,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,16 +39,17 @@ public class BitmeAPI {
     private static final String API_URLROOT = "https://bitme.com/rest";
     private final String apiSecret;
     private final String apiKey;
-    private DefaultHttpClient httpClient;
+    private HttpClient httpClient;
 
     public BitmeAPI(String apiKey, String apiSecret) {
         this.apiKey = apiKey;
         this.apiSecret = apiSecret;
-        this.httpClient = new DefaultHttpClient();
+        this.httpClient = getThreadSafeClient();
         // Production
         this.logger.setLevel(Level.OFF);
         // Debug
         // this.logger.setLevel(Level.ALL);
+
     }
 
     /**
@@ -283,6 +287,8 @@ public class BitmeAPI {
     {
         JSONObject object = null;
         HttpUriRequest req;
+        if(this.apiKey == null || this.apiSecret == null) return null;
+
         if(method == null || method.equals("GET"))
         {
             req = new HttpGet(BitmeAPI.API_URLROOT + url);
@@ -297,12 +303,15 @@ public class BitmeAPI {
         {
             // Must compute nonce and signature
             HMac hmac = new HMac(new SHA512Digest());
-            hmac.init(new KeyParameter(Base64.decode(this.apiSecret)));
+            logger.info("API Secret: " + this.apiSecret);
+            byte[] decoded = Base64.decode(this.apiSecret);
+            if(decoded == null) return null;
+            hmac.init(new KeyParameter(decoded));
             byte[] resBuf = new byte[hmac.getMacSize()];
             Date date = new Date();
             long nonce = date.getTime() * 1000 + 1000000;
             params.add(0, new BasicNameValuePair("nonce", (new Long(nonce)).toString()));
-            String to_hash = URLEncodedUtils.format((Iterable<? extends NameValuePair>) params, null);
+            String to_hash = URLEncodedUtils.format(params, null);
             hmac.update(to_hash.getBytes(), 0, to_hash.getBytes().length);
             hmac.doFinal(resBuf, 0);
             req.addHeader("Rest-Key", this.apiKey);
@@ -344,11 +353,22 @@ public class BitmeAPI {
                 } catch (JSONException inner) {
                     inner.printStackTrace();
                 }
+            } finally {
+                entity.consumeContent();
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
         return object;
+    }
+    public static DefaultHttpClient getThreadSafeClient()  {
+
+        DefaultHttpClient client = new DefaultHttpClient();
+        ClientConnectionManager mgr = client.getConnectionManager();
+        HttpParams params = client.getParams();
+        client = new DefaultHttpClient(new ThreadSafeClientConnManager(params,
+
+                mgr.getSchemeRegistry()), params);
+        return client;
     }
 }
