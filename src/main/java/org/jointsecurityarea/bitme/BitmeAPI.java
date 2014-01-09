@@ -1,20 +1,22 @@
 package org.jointsecurityarea.bitme;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpParams;
-import org.apache.http.util.EntityUtils;
+import ch.boye.httpclientandroidlib.HttpEntity;
+import ch.boye.httpclientandroidlib.HttpResponse;
+import ch.boye.httpclientandroidlib.NameValuePair;
+import ch.boye.httpclientandroidlib.client.HttpClient;
+import ch.boye.httpclientandroidlib.client.entity.UrlEncodedFormEntity;
+import ch.boye.httpclientandroidlib.client.methods.HttpGet;
+import ch.boye.httpclientandroidlib.client.methods.HttpPost;
+import ch.boye.httpclientandroidlib.client.methods.HttpUriRequest;
+import ch.boye.httpclientandroidlib.client.utils.URLEncodedUtils;
+import ch.boye.httpclientandroidlib.conn.ClientConnectionManager;
+import ch.boye.httpclientandroidlib.conn.scheme.Scheme;
+import ch.boye.httpclientandroidlib.conn.ssl.SSLSocketFactory;
+import ch.boye.httpclientandroidlib.impl.client.DefaultHttpClient;
+import ch.boye.httpclientandroidlib.impl.conn.tsccm.ThreadSafeClientConnManager;
+import ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+import ch.boye.httpclientandroidlib.params.HttpParams;
+import ch.boye.httpclientandroidlib.util.EntityUtils;
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.macs.HMac;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -22,10 +24,16 @@ import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import sun.security.ssl.SSLContextImpl;
+
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -311,7 +319,7 @@ public class BitmeAPI {
             Date date = new Date();
             long nonce = date.getTime() * 1000 + 1000000;
             params.add(0, new BasicNameValuePair("nonce", (new Long(nonce)).toString()));
-            String to_hash = URLEncodedUtils.format(params, null);
+            String to_hash = URLEncodedUtils.format(params, Charset.defaultCharset());
             hmac.update(to_hash.getBytes(), 0, to_hash.getBytes().length);
             hmac.doFinal(resBuf, 0);
             req.addHeader("Rest-Key", this.apiKey);
@@ -362,12 +370,26 @@ public class BitmeAPI {
         return object;
     }
     public static DefaultHttpClient getThreadSafeClient()  {
+        SSLSocketFactory sf = null;
+        SSLContext sslContext;
+        try {
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null,null,null);
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        } catch (KeyManagementException e){
+            return null;
+        }
+        sf = new SSLSocketFactory(
+                sslContext,
+                new BitmeSSLVerifier());
 
+        Scheme sch = new Scheme("https", 443, sf);
         DefaultHttpClient client = new DefaultHttpClient();
+        client.getConnectionManager().getSchemeRegistry().register(sch);
         ClientConnectionManager mgr = client.getConnectionManager();
         HttpParams params = client.getParams();
         client = new DefaultHttpClient(new ThreadSafeClientConnManager(params,
-
                 mgr.getSchemeRegistry()), params);
         return client;
     }
