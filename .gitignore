@@ -1,4 +1,4 @@
-# IMPORTANT!!! Contains API SECRET!
+*.iml
 src/test/java/org/jointsecurityarea/bitme/BitmeAPIKeys.java
 target
 .idea
