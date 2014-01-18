@@ -24,7 +24,6 @@ import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import sun.security.ssl.SSLContextImpl;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;

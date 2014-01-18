@@ -74,19 +74,28 @@ public class BitmeAPITest {
         JSONObject object = this.api.create_order("BID", "1.000001", "0.001");
         Assert.assertNotNull(object);
         logger.info("Create Order returned:" + object.toString());
-        Assert.assertTrue(object.has("order"));
-        String order_uuid = object.getJSONObject("order").getString("uuid");
+        if(object.has("error")) {
+            // If we got an error back, make sure it's an insufficient funds error.
+            Assert.assertTrue(object
+                    .getJSONObject("error")
+                    .getString("message")
+                    .contains("Insufficient available"));
+        } else {
+            // Ensure the order was created successfully and returned
+            Assert.assertTrue(object.has("order"));
+            String order_uuid = object.getJSONObject("order").getString("uuid");
 
-        // Get
-        object = this.api.get_order(order_uuid);
-        Assert.assertNotNull(object);
-        Assert.assertTrue(object.has("order"));
+            // Get
+            object = this.api.get_order(order_uuid);
+            Assert.assertNotNull(object);
+            Assert.assertTrue(object.has("order"));
 
-        // Cancel
-        object = this.api.cancel_order(order_uuid);
-        Assert.assertNotNull(object);
-        logger.info("Cancel Order returned:" + object.toString());
-        Assert.assertTrue(object.has("order"));
+            // Cancel
+            object = this.api.cancel_order(order_uuid);
+            Assert.assertNotNull(object);
+            logger.info("Cancel Order returned:" + object.toString());
+            Assert.assertTrue(object.has("order"));
+        }
     }
     @Test
     public void testGetOrderbook() throws Exception {

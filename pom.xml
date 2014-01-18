@@ -56,5 +56,12 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
         </dependency>
+        <dependency>
+            <groupId>ch.boye</groupId>
+            <artifactId>httpclientandroidlib</artifactId>
+            <version>1.2.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/httpclientandroidlib-1.2.0.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>
